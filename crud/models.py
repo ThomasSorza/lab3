@@ -1,5 +1,8 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+import bcrypt
+
 
 # Create your models here. Tables created here will be created in the database
 
@@ -27,6 +30,7 @@ class Users(models.Model):
     register_date = models.DateTimeField(default=timezone.now)
     address = models.CharField(max_length=60)
     role = models.ForeignKey(Roles, on_delete=models.CASCADE, related_name='users')
+    password = models.CharField(max_length=40)
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name

@@ -47,7 +47,24 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+# Importa las clases necesarias
+from datetime import timedelta
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+# Configuración de JWT
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'SLIDING_TOKEN_LIFETIME': timedelta(days=30),
+    'SLIDING_TOKEN_REFRESH_LIFETIME_ALLOW_RENEWAL': True,
+    'SLIDING_TOKEN_LIFETIME_ALLOW_RENEWAL': False,
+    'SLIDING_TOKEN_REFRESH_LIFETIME_ALLOW_RENEWAL': True,
+    'ROTATE_REFRESH_TOKENS': False,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
