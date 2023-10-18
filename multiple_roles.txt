@@ -1,0 +1,42 @@
+[
+    {
+        "rol_name": "Admin",
+        "description": "Administrator"
+    },
+    {
+        "rol_name": "Manager",
+        "description": "Manager"
+    },
+    {
+        "rol_name": "Employee",
+        "description": "Employee"
+    },
+    {
+        "rol_name": "Supervisor",
+        "description": "Supervisor"
+    },
+    {
+        "rol_name": "Developer",
+        "description": "Developer"
+    },
+    {
+        "rol_name": "Designer",
+        "description": "Designer"
+    },
+    {
+        "rol_name": "Analyst",
+        "description": "Analyst"
+    },
+    {
+        "rol_name": "Tester",
+        "description": "Tester"
+    },
+    {
+        "rol_name": "Support",
+        "description": "Support"
+    },
+    {
+        "rol_name": "Intern",
+        "description": "Intern"
+    }
+]
