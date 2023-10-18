@@ -26,7 +26,6 @@ SECRET_KEY = 'django-insecure-s5!7u)0f&^5(wzz@qxobuuooc6o#4jir67w76zursn6^3bftnx
 #EDITED TO FALSE FOR PRODUCTION IN CLOUD
 DEBUG = True
 
-#ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ['apilab3.azurewebsites.net', 'http://127.0.0.1:8000/']
 # Application definition
 
@@ -48,8 +47,6 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
-
-from datetime import timedelta
 
 
 MIDDLEWARE = [
@@ -130,8 +127,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-import os
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
@@ -147,9 +142,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
 #    'PAGE_SIZE': 100
 #}
-
-# Ruta URL para archivos de medios
-MEDIA_URL = '/media/'
-
-# Ruta en el sistema de archivos donde se almacenarán los archivos de medios
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
