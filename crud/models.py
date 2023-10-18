@@ -1,9 +1,5 @@
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-import bcrypt
-
-
 # Create your models here. Tables created here will be created in the database
 
 #Roles models
