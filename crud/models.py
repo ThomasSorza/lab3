@@ -30,7 +30,7 @@ class Users(models.Model):
     register_date = models.DateTimeField(default=timezone.now)
     address = models.CharField(max_length=60)
     role = models.ForeignKey(Roles, on_delete=models.CASCADE, related_name='users')
-    password = models.CharField(max_length=40)
+    password = models.CharField(max_length=40, default='password');
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name

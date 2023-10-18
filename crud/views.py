@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Users, Roles
@@ -9,8 +10,14 @@ from rest_framework.views import APIView
 from .pagination import CreatePageNumberPagination
 # Create your views here.
 # TODO: add a view (Actually not allowed for lab #2)
-def index(request):
-    return HttpResponse("<h1> Lab #2: A simple CRUD with HTTP. <br> Hello World!</h1>")
+
+@api_view(['GET'])
+def getRoutes(request):
+    routes = [
+        '/token',
+        '/token/refresh',
+    ]
+    return Response(routes)
 
 class UserListCreateView(generics.ListCreateAPIView):
     queryset = Users.objects.all()

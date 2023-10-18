@@ -3,7 +3,8 @@ from . import views
 
 urlpatterns = [
     #users paths
-    path('', views.index, name='hello'),
+    path('', views.getRoutes),
+    #path('token/', views.getRoutes),
     path('users/', views.UserListCreateView.as_view(), name='users-list-create'),
     path('users/<int:pk>/', views.UserDetailView.as_view(), name='users-detail'),
     path('users/create-multiple/', views.CreateMultipleUsers.as_view(), name='create-multiple-users'),
