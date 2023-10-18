@@ -11,11 +11,21 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+
+
+#Azure storage configuration
+DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+AZURE_ACCOUNT_NAME = "azusersimages16"
+AZURE_ACCOUNT_KEY = "hkhJiSNAo9yQSw71+MRpVuXYxhvJUL6ULIrDaxG4oxfgTbkk2kUanM+cLylDQSApYIJRHQr4BCra+ASthgvKAw=="
+AZURE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=azusersimages16;AccountKey=eNh3jhD0k+HT1ddOUdBjV21owNgm/Q7I33c0InrRoD0zGU0hnh21X1yNYKYubKPpgC4Dwa7vX/QZ+ASt+fH5LA==;EndpointSuffix=core.windows.net"
+AZURE_CONTAINER = "images1az"
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -26,8 +36,8 @@ SECRET_KEY = 'django-insecure-s5!7u)0f&^5(wzz@qxobuuooc6o#4jir67w76zursn6^3bftnx
 #EDITED TO FALSE FOR PRODUCTION IN CLOUD
 DEBUG = True
 
-#ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['apilab3.azurewebsites.net', 'http://127.0.0.1:8000/']
+ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = ['apilab3.azurewebsites.net', 'http://127.0.0.1:8000/']
 # Application definition
 
 INSTALLED_APPS = [
@@ -47,7 +57,7 @@ INSTALLED_APPS = [
     'corsheaders',
     
     #added for JWT authentication
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt.token_blacklist'
 ]
 
 #Rest framework configuration for token authentication
@@ -63,8 +73,8 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
     
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
+    "ROTATE_REFRESH_TOKENS": True, #if true, refresh token will be rotated
+    "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": False,
 
     "ALGORITHM": "HS256",
