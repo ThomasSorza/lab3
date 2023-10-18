@@ -26,8 +26,8 @@ SECRET_KEY = 'django-insecure-s5!7u)0f&^5(wzz@qxobuuooc6o#4jir67w76zursn6^3bftnx
 #EDITED TO FALSE FOR PRODUCTION IN CLOUD
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['apilab3.azurewebsites.net', 'http://127.0.0.1:8000/']
 # Application definition
 
 INSTALLED_APPS = [
@@ -56,7 +56,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware'
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -137,7 +136,6 @@ import os
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
