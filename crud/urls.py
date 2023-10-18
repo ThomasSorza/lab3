@@ -10,6 +10,8 @@ urlpatterns = [
     path('users-by-name/', views.UserByNameView.as_view(), name='user-by-name'), #Example http://localhost:2000/users-by-name/?name=Esteban
     path('users/<int:pk>/delete-id/', views.DeleteUserById.as_view(), name='delete-by-id'), #Example http://localhost:2000/users/<int:pk>/delete-id/
     #path('users/<str:name>', views.UserRoles.as_view(), name='user-roles'
+    #path('post_image/', views.upload_image, name='post-user-image'),
+
     #roles paths
 
     path('roles/', views.RoleListCreateView.as_view(), name='roles-list-create'),

@@ -110,3 +110,31 @@ class CreateMultipleRoles(APIView):
 class RoleDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Roles.objects.all()
     serializer_class = RolesSerializer
+
+# views.py
+'''
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.conf import settings
+from storages.backends.azure_storage import AzureStorage
+from .forms import FileUploadForm
+
+def upload_image(request):
+    if request.method == 'POST':
+        form = FileUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = form.cleaned_data['file']
+            azure_storage = AzureStorage(
+                account_name=settings.AZURE_ACCOUNT_NAME,
+                account_key=settings.AZURE_ACCOUNT_KEY,
+                container_name=settings.AZURE_CONTAINER,
+            )
+            azure_file_name = f'my_files/{file.name}'
+            azure_storage.save(azure_file_name, file)
+            return JsonResponse({'message': 'Archivo cargado con éxito en Azure Blob Storage.'})
+        else:
+            return JsonResponse({'error': 'Error en el formulario.'}, status=400)
+    else:
+        form = FileUploadForm()
+    return render(request, 'upload_file.html', {'form': form})
+'''
