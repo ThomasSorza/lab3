@@ -33,8 +33,8 @@ SECRET_KEY = 'django-insecure-s5!7u)0f&^5(wzz@qxobuuooc6o#4jir67w76zursn6^3bftnx
 DEBUG = False
 
 
-ALLOWED_HOSTS = []
-#ALLOWED_HOSTS = ['apilab3.azurewebsites.net', 'http://127.0.0.1:8000/']
+#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['apilab3.azurewebsites.net', 'http://127.0.0.1:8000/']
 
 # Application definition
 
