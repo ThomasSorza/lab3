@@ -1,0 +1,10 @@
+POST http://127.0.0.1:8000/login
+Content-Type: application/json
+
+{"document":1234567 , "password": "1234567"}
+###
+
+GET http://127.0.0.1:8000/test_token
+Content-Type: application/json
+
+{"document":1211 , "password": "shadex123"}

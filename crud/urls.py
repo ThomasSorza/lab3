@@ -1,20 +1,22 @@
-from django.urls import path
+from rest_framework import routers
+from .api import RolesViewSet, UsersViewSet, RolesViewSetM, UsersViewSetM, upload_image
+from django.urls import path, include, re_path
 from . import views
 
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+router = routers.DefaultRouter()
+router.register('api/roles', RolesViewSet, 'roles')
+router.register('api/users', UsersViewSet, 'users')
+router.register('api/roles-m', RolesViewSetM, 'roles')
+router.register('api/users-m', UsersViewSetM, 'users')
+
 urlpatterns = [
-    #users paths
-    path('', views.index, name='hello'),
-    path('users/', views.UserListCreateView.as_view(), name='users-list-create'),
-    path('users/<int:pk>/', views.UserDetailView.as_view(), name='users-detail'),
-    path('users/create-multiple/', views.CreateMultipleUsers.as_view(), name='create-multiple-users'),
-    path('users-by-name/', views.UserByNameView.as_view(), name='user-by-name'), #Example http://localhost:2000/users-by-name/?name=Esteban
-    path('users/<int:pk>/delete-id/', views.DeleteUserById.as_view(), name='delete-by-id'), #Example http://localhost:2000/users/<int:pk>/delete-id/
-    #path('users/<str:name>', views.UserRoles.as_view(), name='user-roles'
-    #path('post_image/', views.upload_image, name='post-user-image'),
-
-    #roles paths
-
-    path('roles/', views.RoleListCreateView.as_view(), name='roles-list-create'),
-    path('roles/create-multiple/', views.CreateMultipleRoles.as_view(), name='create-multiple-roles'),
-    path('roles/<int:pk>/', views.RoleDetailView.as_view(), name='roles-detail'),
-]
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('post_image/', upload_image, name='post-user-image'),
+    re_path('login', views.login, name='login'),
+    re_path('test_token', views.test_token, name='test_token'),
+    #re_path('sign_up', views.sign_up, name='test_token'),
+    path('', include(router.urls)),
+    ]

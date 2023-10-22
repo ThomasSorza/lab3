@@ -1,140 +1,54 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Users, Roles
-from .serializers import UsersSerializer, RolesSerializer
-from rest_framework import generics
-from rest_framework.views import APIView
-from .pagination import CreatePageNumberPagination
-# Create your views here.
-# TODO: add a view (Actually not allowed for lab #2)
-def index(request):
-    return HttpResponse("<h1> Lab #2: A simple CRUD with HTTP. <br> Hello World!</h1>")
+from .models import Users
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
 
-class UserListCreateView(generics.ListCreateAPIView):
-    queryset = Users.objects.all()
-    serializer_class = UsersSerializer
-    #Pagination of results
-    pagination_class = CreatePageNumberPagination
+# Query para buscar un usuario por documento y contraseña
+def get_user(document, password):
+    try:
+        user = None
+        if Users.objects.get(document=int(document), password=password) is not None:
+            user = Users.objects.get(document=int(document), password=password)
+        return user
+    except Users.DoesNotExist:
+        return None
 
-    #function to manage the GET request if the queryset is empty
-    def list(self, request, *args, **kwargs):
-        users = self.get_queryset()
-        response = super().list(request, *args, **kwargs)
-        if not users.exists():
-            response = JsonResponse(status=204, data={})
-        return response
-    
-class UserByNameView(generics.ListAPIView):
-    serializer_class = UsersSerializer
+@api_view(['POST'])
+@csrf_exempt
+def login(request):
+    # Obtener el documento y la contraseña de los datos de la solicitud
+    document = request.data.get('document')
+    password = request.data.get('password')
 
-    def get_queryset(self):
-        name = self.request.query_params.get('name', None) # Obtiene el parámetro 'name' de la solicitud GET
-        #TODO: add a limit to the queryset
-        #limit = self.request.query_params.get('nums', None) # Obtiene el parámetro 'nums' de la solicitud GET
-        response = Users.objects.none()         # Si no se proporcionó el parámetro 'name', devuelve un queryset vacío
-        if name is not None:# Realiza una búsqueda por nombre (puede personalizar la búsqueda según necesidades)
-            response = Users.objects.filter(first_name__icontains=name)
-        return response
+    # Utilizar la función get_user para buscar al usuario
+    user = get_user(document, password)
 
-class CreateMultipleUsers(APIView):
-    def post(self, request, format=None):
-        users_data = request.data  # Aquí se espera una lista de objetos JSON
-        if not isinstance(users_data, list):
-            return Response({"non_field_errors": ["Se esperaba una lista de objetos JSON."]}, status=status.HTTP_400_BAD_REQUEST)
+    if user is not None:
 
-        users_created = []
-        response = None #TODO: manage response
-        for user_data in users_data:
-            serializer = UsersSerializer(data=user_data)
-            if serializer.is_valid():
-                response = Response(users_created, status=status.HTTP_201_CREATED)
-                serializer.save()
-                users_created.append(serializer.data)
+        # Generar un token de autorización (JSON Web Token)
+        refresh = RefreshToken.for_user(user)
 
-        return response
+        # Obtener el token de acceso (JWT)
+        access_token = str(refresh.access_token)
 
-#Delete User
-#class DeleteUserById(generics.DestroyAPIView):
-#    def delete(self, request, pk, format=None):
-#        post = self.get_object(pk)
- #       post.delete()
-#        response = Response(status=status.HTTP_204_NO_CONTENT)
-#        return response
-class DeleteUserById(generics.DestroyAPIView):
-    queryset = Users.objects.all()
-    serializer_class = UsersSerializer
-
-    def delete(self, request, *args, **kwargs):
-        instance = self.get_object()  # No es necesario pasar 'pk' como argumento
-        instance.delete()
-        response = Response(status=status.HTTP_204_NO_CONTENT)
-        return response
-
-#PUT requests
-class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Users.objects.all()
-    serializer_class = UsersSerializer
-
-class RoleListCreateView(generics.ListCreateAPIView):
-    queryset = Roles.objects.all()
-    serializer_class = RolesSerializer
-    pagination_class = CreatePageNumberPagination
-    #function to manage the GET request if the queryset is empty
-    def list(self, request, *args, **kwargs):
-        roles = self.get_queryset()
-        response = super().list(request, *args, **kwargs)
-        if not roles.exists():
-            response = JsonResponse(status=204, data={})
-        return response
-    
-class CreateMultipleRoles(APIView):
-    def post(self, request, format=None):
-        roles_data = request.data  # Aquí se espera una lista de objetos JSON
-
-        if not isinstance(roles_data, list):
-            return Response({"non_field_errors": ["Se esperaba una lista de objetos JSON."]}, status=status.HTTP_400_BAD_REQUEST)
-
-        roles_created = []
-
-        for role_data in roles_data:
-            serializer = RolesSerializer(data=role_data)
-            if serializer.is_valid():
-                serializer.save()
-                roles_created.append(serializer.data)
-
-        return Response(roles_created, status=status.HTTP_201_CREATED)
-
-#PUT requests
-class RoleDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Roles.objects.all()
-    serializer_class = RolesSerializer
-
-# views.py
-'''
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.conf import settings
-from storages.backends.azure_storage import AzureStorage
-from .forms import FileUploadForm
-
-def upload_image(request):
-    if request.method == 'POST':
-        form = FileUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            file = form.cleaned_data['file']
-            azure_storage = AzureStorage(
-                account_name=settings.AZURE_ACCOUNT_NAME,
-                account_key=settings.AZURE_ACCOUNT_KEY,
-                container_name=settings.AZURE_CONTAINER,
-            )
-            azure_file_name = f'my_files/{file.name}'
-            azure_storage.save(azure_file_name, file)
-            return JsonResponse({'message': 'Archivo cargado con éxito en Azure Blob Storage.'})
-        else:
-            return JsonResponse({'error': 'Error en el formulario.'}, status=400)
+        # Construir una respuesta con el token JWT
+        response_data = {
+            'access_token': access_token,
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
     else:
-        form = FileUploadForm()
-    return render(request, 'upload_file.html', {'form': form})
-'''
+        # Si no se encuentra un usuario, responder con un mensaje de error y código 401 (No autorizado)
+        return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['GET'])
+def test_token(request):
+    return Response({})
+
+#TODO: Implementar la función para cambiar la contraseña de un usuario
+# debe devolver un código 200 si la contraseña se cambió correctamente (para mostrar en el front )
+@api_view(['POST'])
+def change_user_img_url(request):
+    return Response({})
