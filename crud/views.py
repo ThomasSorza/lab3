@@ -41,7 +41,7 @@ def login(request):
         return Response(response_data, status=status.HTTP_200_OK)
     else:
         # Si no se encuentra un usuario, responder con un mensaje de error y código 401 (No autorizado)
-        return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'error': 'Credenciales incorrectas'}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['GET'])
 def test_token(request):

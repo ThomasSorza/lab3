@@ -34,5 +34,9 @@
     {
         "rol_name": "Intern",
         "description": "Intern"
+    },
+    {
+        "rol_name": "Employee",
+        "description": "This is a basic Employee"
     }
 ]

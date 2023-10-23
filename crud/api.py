@@ -16,19 +16,23 @@ class CustomPageNumberPagination(PageNumberPagination):
 
 class RolesViewSet(viewsets.ModelViewSet):
     queryset = Roles.objects.all()
-    permission_classes = [
-        permissions.AllowAny  # TODO: Cambiar a IsAuthenticated
-    ]
+    permission_classes = [permissions.AllowAny]  # Cambia a IsAuthenticated cuando sea necesario
     serializer_class = RolesSerializer
     pagination_class = CustomPageNumberPagination
 
+    def delete_all_roles(self, request):
+        Roles.objects.all().delete()
+        return Response({"message": "Todos los roles han sido eliminados"}, status=status.HTTP_204_NO_CONTENT)
+
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all()
-    permission_classes = [
-        permissions.AllowAny  # TODO: Cambiar a IsAuthenticated
-    ]
+    permission_classes = [permissions.AllowAny]  # Cambia a IsAuthenticated
     serializer_class = UsersSerializer
     pagination_class = CustomPageNumberPagination
+
+    def delete_all_users(self, request):
+        Users.objects.all().delete()
+        return Response({"message": "Todos los usuarios han sido eliminados"}, status=status.HTTP_204_NO_CONTENT)
 
 class RolesViewSetM(viewsets.ModelViewSet):
     queryset = Roles.objects.all()
