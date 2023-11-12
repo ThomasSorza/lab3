@@ -33,3 +33,7 @@ class Users(models.Model):
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
+
+class Roles_Users(models.Model):
+    role = models.ForeignKey(Roles, on_delete=models.CASCADE, related_name='users_roles')
+    user = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='users_roles')
