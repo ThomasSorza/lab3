@@ -16,6 +16,7 @@ isodate==0.6.1
 Pillow==10.1.0
 pycparser==2.21
 PyJWT==2.8.0
+PyMySQL==1.1.0
 pytz==2023.3.post1
 requests==2.31.0
 setuptools==68.2.2

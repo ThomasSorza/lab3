@@ -50,9 +50,11 @@ def login(request):
 def test_token(request):
     return Response({})
 
-#Filtering---------------
-def filtering_results(text_to_search):
+# Filtering---------------
+def filtering_results(request):
     try:
+        text_to_search = request.GET.get('text_to_search', '')
+
         filtered_users = Users.objects.filter(
             first_name__icontains=text_to_search
         ) | Users.objects.filter(
@@ -62,7 +64,7 @@ def filtering_results(text_to_search):
         ) | Users.objects.filter(
             document__icontains=text_to_search
         ) | Users.objects.filter(
-            birthday_icontains=text_to_search
+            birthday__icontains=text_to_search
         ) | Users.objects.filter(
             phone_number__icontains=text_to_search
         ) | Users.objects.filter(
@@ -83,9 +85,12 @@ def filtering_results(text_to_search):
             'role': user.role.rol_name if user.role else None,
             'user_image': user.user_image,
         } for user in filtered_users]
-        
+
+        return JsonResponse({'users': serialized_users}, status=200)
+
     except Users.DoesNotExist:
-        return JsonResponse({'message': 'Usuario no encontrado'}, status=404)
+        return JsonResponse({'message': 'Usuarios no encontrados'}, status=404)
+
 
 #TODO: Implementar la función para cambiar la contraseña de un usuario
 # debe devolver un código 200 si la contraseña se cambió correctamente (para mostrar en el front )
