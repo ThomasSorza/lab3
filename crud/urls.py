@@ -2,6 +2,7 @@ from rest_framework import routers
 from .api import RolesViewSet, UsersViewSet, RolesViewSetM, UsersViewSetM, upload_image
 from django.urls import path, include, re_path
 from . import views
+from .views import roles_user_count
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -14,6 +15,7 @@ router.register('api/users-m', UsersViewSetM, 'users')
 urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/users/filter/', views.filtering_results, name='filter_users'),
+    path('api/roles_user_count/', roles_user_count, name='roles_user_count'),
     path('api/roles/delete-all/', RolesViewSet.as_view({'delete': 'delete_all_roles'}), name='delete-all-roles'),
     path('api/users/delete-all/', UsersViewSet.as_view({'delete': 'delete_all_users'}), name='delete-all-users'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

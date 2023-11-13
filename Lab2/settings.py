@@ -34,10 +34,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 SECRET_KEY = 'django-insecure-s5!7u)0f&^5(wzz@qxobuuooc6o#4jir67w76zursn6^3bftnx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-#ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['asbackpython3.azurewebsites.net','asbackpython2.azurewebsites.net','asbackpython1.azurewebsites.net', 'http://127.0.0.1:8000/']
+ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = ['asbackpython3.azurewebsites.net','asbackpython2.azurewebsites.net','asbackpython1.azurewebsites.net', 'http://127.0.0.1:8000/']
 
 # Application definition
 
@@ -57,6 +57,19 @@ INSTALLED_APPS = [
     
     'whitenoise.runserver_nostatic',
 ]
+
+#REDIS
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://ACRfinalProject.redis.cache.windows.net:6379?password=lv0ulSZbUQzyQCAsL6pUIRIEsXdO644q5AzCaMRKPZI=',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

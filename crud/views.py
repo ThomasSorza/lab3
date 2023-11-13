@@ -8,6 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 #filtering results pag. imports
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from .models import Roles   
 
 # Query para buscar un usuario por documento y contraseña
 def get_user(document, password):
@@ -97,3 +98,19 @@ def filtering_results(request):
 @api_view(['POST'])
 def change_user_img_url(request):
     return Response({})
+
+#----- CACHE -----
+@api_view(['GET'])
+def roles_user_count(request):
+    roles = Roles.objects.all()
+    roles_data = {}
+
+    for role in roles:
+        # Obtener la cantidad de usuarios para cada rol
+        user_count = role.user_count
+
+        # Crear un diccionario con el nombre del rol y la cantidad de usuarios
+        roles_data[role.rol_name] = user_count
+
+    # Devolver los datos en formato JSON
+    return JsonResponse({'roles': roles_data})

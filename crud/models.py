@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.db import models
+from django.utils.functional import cached_property
 
 # Create your models here. Tables created here will be created in the database
 
@@ -14,6 +15,10 @@ class Roles(models.Model):
 
     def __str__(self) :
         return self.rol_name
+    
+    @cached_property
+    def user_count(self):
+        return self.users.count()
 
 # Define the Users model
 #Table Users
