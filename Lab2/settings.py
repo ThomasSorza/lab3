@@ -34,11 +34,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 SECRET_KEY = 'django-insecure-s5!7u)0f&^5(wzz@qxobuuooc6o#4jir67w76zursn6^3bftnx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-
-ALLOWED_HOSTS = []
-#ALLOWED_HOSTS = ['apilab3.azurewebsites.net', 'http://127.0.0.1:8000/']
+#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['asbackpython3.azurewebsites.net','asbackpython2.azurewebsites.net','asbackpython1.azurewebsites.net', 'http://127.0.0.1:8000/']
 
 # Application definition
 
@@ -55,10 +54,13 @@ INSTALLED_APPS = [
     
     'rest_framework.authtoken', #added for JWT
     'rest_framework_simplejwt',
+    
+    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', #added for whitenoise
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -122,26 +124,15 @@ WSGI_APPLICATION = 'Lab2.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-    #   'OPTIONS': {
-    #       'ssl': {
-    #           'ca': 'C:/Users/tsorz/Downloads/DigiCertGlobalRootCA.crt.pem'
-    #       }
-    #   },
-    #   'NAME': 'projectfinal',
-    #   'USER': 'azureuser',
-    #   'PASSWORD': 'pass123!',
-    #   'HOST': 'project-mysqlserver.mysql.database.azure.com',
-    #   'PORT': '3306', 
-        'NAME': 'ds_project_lab',
-        'USER': 'root',
-        'PASSWORD': 'Shadexgod0941',
-        'HOST': 'localhost',  # O la dirección IP de tu servidor MySQL.
-        'PORT': '3300',       # El puerto de MySQL.
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "api",
+        "USER": "root1",
+        "PASSWORD": "azurepass1!",
+        "HOST": "possgresserver.postgres.database.azure.com",
+        "PORT": "5432",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -177,7 +168,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
