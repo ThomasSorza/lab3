@@ -16,9 +16,7 @@ class Roles(models.Model):
     def __str__(self) :
         return self.rol_name
     
-    @cached_property
-    def user_count(self):
-        return self.users.count()
+    
 
 # Define the Users model
 #Table Users
