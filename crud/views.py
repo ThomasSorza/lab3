@@ -8,7 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 #filtering results pag. imports
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from .models import Roles   
+from .models import Roles
 
 # Query para buscar un usuario por documento y contraseña
 def get_user(document, password):
@@ -50,47 +50,6 @@ def login(request):
 @api_view(['GET'])
 def test_token(request):
     return Response({})
-
-# Filtering---------------
-def filtering_results(request):
-    try:
-        text_to_search = request.GET.get('text_to_search', '')
-
-        filtered_users = Users.objects.filter(
-            first_name__icontains=text_to_search
-        ) | Users.objects.filter(
-            last_name__icontains=text_to_search
-        ) | Users.objects.filter(
-            type_document__icontains=text_to_search
-        ) | Users.objects.filter(
-            document__icontains=text_to_search
-        ) | Users.objects.filter(
-            birthday__icontains=text_to_search
-        ) | Users.objects.filter(
-            phone_number__icontains=text_to_search
-        ) | Users.objects.filter(
-            address__icontains=text_to_search
-        )
-
-        serialized_users = [{
-            'id': user.id,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'type_document': user.type_document,
-            'document': user.document,
-            'birthday': user.birthday.strftime('%Y-%m-%d'),
-            'phone_number': user.phone_number,
-            'is_active': user.is_active,
-            'register_date': user.register_date.strftime('%Y-%m-%d %H:%M:%S'),
-            'address': user.address,
-            'role': user.role.rol_name if user.role else None,
-            'user_image': user.user_image,
-        } for user in filtered_users]
-
-        return JsonResponse({'users': serialized_users}, status=200)
-
-    except Users.DoesNotExist:
-        return JsonResponse({'message': 'Usuarios no encontrados'}, status=404)
 
 
 #TODO: Implementar la función para cambiar la contraseña de un usuario

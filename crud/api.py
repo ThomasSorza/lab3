@@ -1,22 +1,26 @@
 from rest_framework import viewsets, permissions
 from .serializers import UsersSerializer, RolesSerializer
-
 from rest_framework import status
 from rest_framework.response import Response
-import bcrypt
 from .models import Roles, Users
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import api_view
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 class CustomPageNumberPagination(PageNumberPagination):
-    #Read all about 
-    #https://www.django-rest-framework.org/api-guide/pagination/
-    #contains params, etc
-    page_size = 50 #results's size (show first 50 registers)
-    #max_page_size = 100
+    page_size = 50
+
+class UsersSearch(viewsets.ModelViewSet):
+    queryset = Users.objects.all()
+    serializer_class = UsersSerializer
+    pagination_class = CustomPageNumberPagination
+    filter_backends = (SearchFilter, OrderingFilter)
+    search_fields = ('first_name', 'last_name')
+    ordering_fields = ('first_name', 'last_name')  # Add the fields you want to support ordering
 
 class RolesViewSet(viewsets.ModelViewSet):
     queryset = Roles.objects.all()
-    permission_classes = [permissions.AllowAny]  # Cambia a IsAuthenticated cuando sea necesario
+    permission_classes = [permissions.AllowAny]
     serializer_class = RolesSerializer
     pagination_class = CustomPageNumberPagination
 
@@ -26,7 +30,7 @@ class RolesViewSet(viewsets.ModelViewSet):
 
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all()
-    permission_classes = [permissions.AllowAny]  # Cambia a IsAuthenticated
+    permission_classes = [permissions.AllowAny]
     serializer_class = UsersSerializer
     pagination_class = CustomPageNumberPagination
 
@@ -39,7 +43,6 @@ class RolesViewSetM(viewsets.ModelViewSet):
     serializer_class = RolesSerializer
 
     def create(self, request, *args, **kwargs):
-        # Handle bulk creation of roles
         roles_data = request.data if isinstance(request.data, list) else [request.data]
         roles_serializer = RolesSerializer(data=roles_data, many=True)
 
@@ -53,7 +56,6 @@ class UsersViewSetM(viewsets.ModelViewSet):
     serializer_class = UsersSerializer
 
     def create(self, request, *args, **kwargs):
-        # Handle bulk creation of users
         users_data = request.data if isinstance(request.data, list) else [request.data]
         users_serializer = UsersSerializer(data=users_data, many=True)
 
@@ -61,7 +63,7 @@ class UsersViewSetM(viewsets.ModelViewSet):
             users_serializer.save()
             return Response(users_serializer.data, status=status.HTTP_201_CREATED)
         return Response(users_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.conf import settings
