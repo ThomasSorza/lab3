@@ -87,6 +87,74 @@ def filtering_results(text_to_search):
     except Users.DoesNotExist:
         return JsonResponse({'message': 'Usuario no encontrado'}, status=404)
 
+from django.utils.translation import gettext as _
+from datetime import date, datetime
+import pandas as pd
+from io import BytesIO
+from django.http import HttpResponse, JsonResponse
+from azure.communication.email import EmailClient
+
+def registered_today(xls_content):
+    try:
+        today = date.today()
+        users_today = Users.objects.filter(register_date__date=today)
+
+        data = {
+            _('ID'): [user.id for user in users_today],
+            _('First Name'): [user.first_name for user in users_today],
+            _('Last Name'): [user.last_name for user in users_today],
+            _('Type Document'): [user.type_document for user in users_today],
+            _('Document'): [user.document for user in users_today],
+            _('Birthday'): [user.birthday.strftime('%Y-%m-%d') for user in users_today],
+            _('Phone Number'): [user.phone_number for user in users_today],
+            _('Is Active'): [user.is_active for user in users_today],
+            _('Register Date'): [user.register_date.strftime('%Y-%m-%d %H:%M:%S') for user in users_today],
+            _('Address'): [user.address for user in users_today],
+            _('Role'): [user.role.rol_name if user.role else None for user in users_today],
+            _('Password'): [user.password for user in users_today],
+            _('User Image'): [user.user_image for user in users_today],
+        }
+
+        df = pd.DataFrame(data)
+
+        df.to_excel(xls_content, index=False, engine='openpyxl')
+        xls_content.seek(0)
+        return xls_content
+
+    except Exception as ex:
+        raise ex
+
+def main():
+    try:
+        xls_content = BytesIO()
+        xls_content = registered_today(xls_content)
+
+        connection_string = "endpoint=https://comms-mails.unitedstates.communication.azure.com/;accesskey=6XK80TBbfIlS5Lb6Tj+o+KYWqrU3SvY394gtqXihEw13FLyWdbXq4HYMjhg2/XwWgc+OFg07C4igjgjNXL0yfQ=="
+        client = EmailClient.from_connection_string(connection_string)
+
+        message = {
+            "senderAddress": "DoNotReply@03142165-1801-4965-bae1-42453af8a6c5.azurecomm.net",
+            "recipients":  {
+                "to": [{"address": "edward.sosa@uptc.edu.co" }],
+            },
+            "content": {
+                "subject": f"USUARIOS CREADOS {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+                "plainText": "Lista de usuarios el día de hoy",
+            },
+            "attachments": [{
+                "content": xls_content.getvalue(),
+                "filename": f"users_today_{datetime.now().strftime('%Y-%m-%d')}.xlsx",
+                "type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            }]
+        }
+
+        poller = client.begin_send(message)
+        result = poller.result()
+
+    except Exception as ex:
+        print(ex)
+#main()
+
 #TODO: Implementar la función para cambiar la contraseña de un usuario
 # debe devolver un código 200 si la contraseña se cambió correctamente (para mostrar en el front )
 @api_view(['POST'])
